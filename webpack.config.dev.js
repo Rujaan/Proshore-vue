@@ -20,7 +20,7 @@ module.exports = (env = {}) => ({
     extensions: [".ts", ".js", ".vue", ".json"],
     alias: {
       vue: "@vue/runtime-dom",
-      "@": path.join(__dirname, "src"),
+      "@": path.join(__dirname, "./src/"),
     },
   },
   devServer: {
@@ -49,6 +49,17 @@ module.exports = (env = {}) => ({
         test: /\.js$/i,
         exclude: /node_modules/,
         loader: "babel-loader",
+      },
+      {
+        test: /.ts$/,
+        use: [
+          {
+            loader: "ts-loader",
+            options: {
+              appendTsSuffixTo: [/.vue$/],
+            },
+          },
+        ],
       },
       {
         test: /\.css$/,
