@@ -41,9 +41,9 @@ module.exports = () => {
   ];
 
   //data to export
-  const data = { employee: [], manager: [], department: [] };
-
-  for (let i = 0; i < 20; i++) {
+  const data = { employee: [], manager: [], department: [], employee2: [] };
+  const numberOfEmployee = 20;
+  for (let i = 0; i < numberOfEmployee; i++) {
     data.employee.push({
       id: i * 10 + 1,
       name: casual.full_name,
@@ -53,15 +53,14 @@ module.exports = () => {
       manager: manager[Math.floor(Math.random() * role.length)],
       joining_date: casual.date((format = "YYYY-MM-DD")),
     });
-    data.manager.push({
-      manager_id: manager[Math.floor(Math.random() * role.length)].id,
-      manager_position:
-        manager[Math.floor(Math.random() * role.length)].position,
-    });
-    data.department.push({
-      department_id: department[Math.floor(Math.random() * role.length)].id,
-      department_dept: department[Math.floor(Math.random() * role.length)].dept,
+  }
+
+  for (let i = 0; i < numberOfEmployee / 2; i++) {
+    data.employee2.push({
+      name: casual.full_name,
     });
   }
+  data.manager = manager;
+  data.department = department;
   return data;
 };

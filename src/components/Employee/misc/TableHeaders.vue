@@ -5,7 +5,6 @@
     @click="filterTable(value)"
   >
     {{ input }}
-    {{ dir }}
     <button class="self-center" v-if="showArrow">
       <svg
         xmlns="http://www.w3.org/2000/svg"
