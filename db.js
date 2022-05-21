@@ -43,7 +43,7 @@ module.exports = () => {
   //data to export
   const data = { employee: [], manager: [], department: [] };
 
-  for (let i = 0; i < 1000; i++) {
+  for (let i = 0; i < 20; i++) {
     data.employee.push({
       id: casual.uuid,
       name: casual.full_name,
