@@ -6,6 +6,12 @@ export async function getAllEmployees() {
   return res;
 }
 
+export async function getAllEmployees2() {
+  let url = "/employee2";
+  const res = await publicRequest.get(url);
+  return res;
+}
+
 export async function getEmployee(id) {
   let url = `/employee/${id}`;
   return await publicRequest.get(url);

@@ -39,7 +39,6 @@
       <div class="py-2 inline-block min-w-full sm:px-6 lg:px-8">
         <div class="overflow-x-auto">
           <div v-if="searchedEmployee.length > 0">
-            Filter by: {{ filterValue }}
             <table class="min-w-full">
               <thead class="border-b">
                 <tr>
@@ -128,7 +127,7 @@
                   <td
                     class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
                   >
-                    {{ employee.joining_date }}
+                    {{ getTimeNow(employee.joining_date) }}
                   </td>
                   <td
                     class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
@@ -184,6 +183,7 @@
 import { defineComponent, ref, watchEffect, computed } from "vue";
 import { getAllEmployees } from "../../services/employee/employeeServices";
 import TableHeaders from "./misc/TableHeaders.vue";
+import moment from "moment";
 
 export default defineComponent({
   emits: ["edited", "deleted"],
@@ -194,7 +194,7 @@ export default defineComponent({
     const error = ref(null);
     const selectedOption = ref("name");
     const searchedValue = ref("");
-    const filterValue = ref("");
+    const filterValue = ref("name");
     const sortDir = ref("asc");
 
     watchEffect((selectedOption) => {
@@ -262,6 +262,10 @@ export default defineComponent({
       emit("deleted", value);
     };
 
+    const getTimeNow = (date) => {
+      return moment(date, "YYYYMMDD").fromNow();
+    };
+
     return {
       employees,
       selectedOption,
@@ -272,6 +276,7 @@ export default defineComponent({
       filterValue,
       filterTable,
       sortDir,
+      getTimeNow,
     };
   },
 });
