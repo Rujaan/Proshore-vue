@@ -62,5 +62,6 @@ module.exports = () => {
   }
   data.manager = manager;
   data.department = department;
+
   return data;
 };

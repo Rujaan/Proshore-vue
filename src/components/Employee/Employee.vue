@@ -1,6 +1,17 @@
 <template>
   <div>
-    <h1 class="text-2xl">List of employees</h1>
+    <div class="flex justify-between flex-wrap">
+      <h1 class="text-2xl">List of employees</h1>
+      <button
+        @click="logout"
+        class="rounded relative inline-flex group items-center justify-center px-3.5 py-2 cursor-pointer border-b-4 border-l-2 active:border-red-600 active:shadow-none shadow-lg bg-gradient-to-tr from-red-600 to-red-500 border-red-700 text-white"
+      >
+        <span
+          class="absolute w-0 h-0 transition-all duration-300 ease-out bg-white rounded-full group-hover:w-32 group-hover:h-32 opacity-10"
+        ></span>
+        <span class="relative">Logout</span>
+      </button>
+    </div>
     <div>
       <button
         @click="showAddModal = true"
@@ -43,6 +54,8 @@ import EmployeeTable from "./EmployeeTable.vue";
 import AddEmployee from "./AddEmployee.vue";
 import EditEmployee from "./EditEmployee.vue";
 import DeleteEmployee from "./DeleteEmployee.vue";
+import { useStore } from "vuex";
+import { useRouter } from "vue-router";
 
 export default defineComponent({
   components: { EmployeeTable, AddEmployee, EditEmployee, DeleteEmployee },
@@ -52,6 +65,8 @@ export default defineComponent({
     const showDeleteModal = ref(false);
     const employeeId = ref(0);
     const key = ref(0);
+    const store = useStore();
+    const router = useRouter();
 
     const updateTable = () => {
       key.value++;
@@ -67,6 +82,12 @@ export default defineComponent({
       showDeleteModal.value = true;
     };
 
+    const logout = () => {
+      store.commit("setLoggedIn", false);
+      store.commit("setUser", "");
+      router.push("/");
+    };
+
     return {
       showAddModal,
       key,
@@ -76,6 +97,7 @@ export default defineComponent({
       showEditModal,
       employeeId,
       showDeleteModal,
+      logout,
     };
   },
 });
