@@ -14,5 +14,6 @@
     "lib": ["es2020", "dom"]
   },
   "exclude": [".history", "node_modules", "src/**/*."],
-  "include": ["**/*"]
+  "include": ["src/**/*.ts"],
+  "files": ["./src/vue.d.ts"]
 }

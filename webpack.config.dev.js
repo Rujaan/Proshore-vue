@@ -17,11 +17,15 @@ module.exports = (env = {}) => ({
     publicPath: "/",
   },
   resolve: {
-    extensions: [".ts", ".js", ".vue", ".json"],
+    extensions: [".vue", ".ts", ".tsx", ".js"],
+
     alias: {
       vue: "@vue/runtime-dom",
       "@": path.join(__dirname, "./src/"),
     },
+  },
+  resolveLoader: {
+    modules: ["node_modules", "loader"],
   },
   devServer: {
     hot: true,
@@ -43,7 +47,8 @@ module.exports = (env = {}) => ({
     rules: [
       {
         test: /\.vue$/,
-        use: "vue-loader",
+        loader: "vue-loader",
+        exclude: /node_modules/,
       },
       {
         test: /\.js$/i,
@@ -61,6 +66,7 @@ module.exports = (env = {}) => ({
           },
         ],
       },
+
       {
         test: /\.css$/,
         use: [

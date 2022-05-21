@@ -43,24 +43,24 @@ module.exports = () => {
   //data to export
   const data = { employee: [], manager: [], department: [] };
 
-  for (let i = 0; i < 1000; i++) {
+  for (let i = 0; i < 20; i++) {
     data.employee.push({
-      id: casual.uuid,
+      id: i * 10 + 1,
       name: casual.full_name,
-      Address: casual.address,
-      Department_id: department[Math.floor(Math.random() * role.length)].id,
-      Role: role[Math.floor(Math.random() * role.length)],
-      Manager_id: manager[Math.floor(Math.random() * role.length)].id,
-      Joining_date: casual.date((format = "YYYY-MM-DD")),
+      address: casual.address,
+      department: department[Math.floor(Math.random() * role.length)],
+      role: role[Math.floor(Math.random() * role.length)],
+      manager: manager[Math.floor(Math.random() * role.length)],
+      joining_date: casual.date((format = "YYYY-MM-DD")),
     });
     data.manager.push({
-      Manager_id: manager[Math.floor(Math.random() * role.length)].id,
-      Manager_position:
+      manager_id: manager[Math.floor(Math.random() * role.length)].id,
+      manager_position:
         manager[Math.floor(Math.random() * role.length)].position,
     });
     data.department.push({
-      Department_id: department[Math.floor(Math.random() * role.length)].id,
-      Department_dept: department[Math.floor(Math.random() * role.length)].dept,
+      department_id: department[Math.floor(Math.random() * role.length)].id,
+      department_dept: department[Math.floor(Math.random() * role.length)].dept,
     });
   }
   return data;
