@@ -1,15 +1,15 @@
 <template>
   <div class="p-10">
-    <Admin />
+    <Employee />
   </div>
 </template>
 
 <script>
 import { defineComponent } from "vue";
-import Admin from "../../components/Admin/Admin.vue";
+import Employee from "../../components/Employee/Employee.vue";
 
 export default defineComponent({
-  components: { Admin },
+  components: { Employee },
   setup() {
     return {};
   },
