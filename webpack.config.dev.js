@@ -1,32 +1,43 @@
 "use strict";
 const webpack = require("webpack");
 const { VueLoaderPlugin } = require("vue-loader");
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 var path = require("path");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
-module.exports = {
+module.exports = (env = {}) => ({
   mode: "development",
+  context: path.resolve(__dirname, ""),
 
   entry: "./src/main.js",
   output: {
     path: path.resolve(__dirname, "dist"),
-    filename: "[name].js",
+    filename: "[name].[hash:6].bundle.js",
+    publicPath: "/",
   },
   resolve: {
+    extensions: [".ts", ".js", ".vue", ".json"],
     alias: {
       vue: "@vue/runtime-dom",
       "@": path.join(__dirname, "src"),
     },
   },
   devServer: {
-    static: "dist",
     hot: true,
-    compress: true,
-    port: 3000,
+    historyApiFallback: true,
   },
   optimization: {
     runtimeChunk: "single",
+    splitChunks: {
+      cacheGroups: {
+        vendor: {
+          test: /[\\/]node_modules[\\/]/,
+          name: "vendors",
+          chunks: "all",
+        },
+      },
+    },
   },
   module: {
     rules: [
@@ -36,39 +47,30 @@ module.exports = {
       },
       {
         test: /\.js$/i,
-        include: path.resolve(__dirname, "dist"),
-        use: {
-          loader: "babel-loader",
-          options: { presets: ["@babel/preset-env"] },
-        },
+        exclude: /node_modules/,
+        loader: "babel-loader",
       },
       {
         test: /\.css$/,
         use: [
-          {
-            loader: MiniCssExtractPlugin.loader,
-            options: { hmr: !env.prod },
-          },
-          "css-loader",
+          MiniCssExtractPlugin.loader,
+          { loader: "css-loader", options: { importLoaders: 1 } },
           "postcss-loader",
         ],
-      },
-      {
-        test: /\.(png|jpe?g|gif)$/i,
-        loader: "file-loader",
-        options: {
-          name: "images/[name].[ext]",
-        },
       },
     ],
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
+    new CleanWebpackPlugin(),
     new VueLoaderPlugin(),
+    new MiniCssExtractPlugin({
+      filename: "[name].css",
+    }),
     new HtmlWebpackPlugin({
-      filename: "index.html",
+      filename: "./index.html",
       template: "./index.html",
       inject: true,
     }),
   ],
-};
+});
