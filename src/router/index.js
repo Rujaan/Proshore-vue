@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import Login from "@/view/Login/Login.vue";
-import Admin from "@/view/Admin/Admin.vue";
+import Employee from "@/view/Employee/Employee.vue";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -11,9 +11,9 @@ const router = createRouter({
       component: Login,
     },
     {
-      path: "/admin",
-      name: "Admin",
-      component: Admin,
+      path: "/employee",
+      name: "Employee",
+      component: Employee,
     },
   ],
 });

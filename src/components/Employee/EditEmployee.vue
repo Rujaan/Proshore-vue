@@ -42,7 +42,7 @@
                   class="text-lg leading-6 font-medium text-gray-900"
                   id="modal-title"
                 >
-                  Add an employee
+                  Update employee
                 </h3>
                 <div class="mt-2">
                   <form class="grid grid-cols-2 gap-x-16 gap-y-6 mt-5">
@@ -80,52 +80,58 @@
                     </div>
                     <!-- Department -->
                     <div class="relative z-0 w-full mb-6 group">
-                      <input
-                        type="id"
-                        name="Id"
+                      <select
                         v-model="formData.department"
                         class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                        placeholder=" "
-                        required
-                      />
+                      >
+                        <option value="General" selected>General</option>
+                        <option value="Marketing">Marketing</option>
+                        <option value="Finance">Finance</option>
+                        <option value="Sales">Sales</option>
+                        <option value="HR">HR</option>
+                      </select>
+
                       <label
-                        for="Email"
+                        for="Type"
                         class="peer-focus:font-medium absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
                         >Department</label
                       >
                     </div>
                     <!-- Manager -->
                     <div class="relative z-0 w-full mb-6 group">
-                      <input
-                        type="Manager"
-                        name="Manager"
+                      <select
                         v-model="formData.manager"
                         class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                        placeholder=" "
-                        required
-                      />
+                      >
+                        <option value="General" selected>General</option>
+                        <option value="Functional">Functional</option>
+                        <option value="Front Line">Front Line</option>
+                      </select>
+
                       <label
-                        for="Email"
+                        for="Type"
                         class="peer-focus:font-medium absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                        >Manager</label
+                      >
+                        Manager</label
                       >
                     </div>
                     <!-- Role -->
                     <div class="relative z-0 w-full mb-6 group">
-                      <input
-                        type="Role"
-                        name="Role"
+                      <select
                         v-model="formData.role"
                         class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                        placeholder=" "
-                        required
-                      />
+                      >
+                        <option value="Manager" selected>Manager</option>
+                        <option value="Employee">Employee</option>
+                      </select>
+
                       <label
-                        for="Email"
+                        for="Type"
                         class="peer-focus:font-medium absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
                         >Role</label
                       >
                     </div>
+
                     <!-- Date -->
                     <div class="relative z-0 w-full mb-6 group">
                       <input
@@ -153,7 +159,7 @@
               @click="AddEmployee"
               class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:ml-3 sm:w-auto sm:text-sm"
             >
-              Add
+              Update
             </button>
             <button
               type="button"
@@ -171,19 +177,68 @@
 
 <script>
 import { ref } from "vue";
+import {
+  getEmployee,
+  patchEmployee,
+} from "../../services/employee/employeeServices";
+
 export default {
+  props: ["id"],
+  emits: ["close", "added"],
   setup(props, { emit }) {
     const formData = ref([]);
-
     const closeModal = () => {
       emit("close", true);
     };
 
-    const AddEmployee = () => {
-      console.log("add");
+    const employee = async () => {
+      try {
+        const res = await getEmployee(props.id);
+        formData.value = {
+          name: res.data.name,
+          address: res.data.address,
+          department: res.data.department.dept,
+          manager: res.data.manager.position,
+          role: res.data.role,
+          date: res.data.joining_date,
+        };
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    employee();
+
+    const AddEmployee = async () => {
+      const min = 0;
+      const max = 999999;
+      try {
+        const data = {
+          id: Math.floor(Math.random() * (max - min) + min),
+          name: formData.value.name,
+          address: formData.value.address,
+          role: formData.value.role,
+          manager: {
+            id: Math.floor(Math.random() * (max - min) + min),
+            position: formData.value.manager,
+          },
+
+          department: {
+            id: Math.floor(Math.random() * (max - min) + min),
+            dept: formData.value.department,
+          },
+
+          joining_date: formData.value.date,
+        };
+        console.log(data);
+        const res = await patchEmployee(props.id, data);
+        emit("close", true);
+        emit("added", true);
+      } catch (err) {
+        console.log(err);
+      }
     };
 
-    return { closeModal, AddEmployee, formData };
+    return { closeModal, AddEmployee, employee, formData };
   },
 };
 </script>
