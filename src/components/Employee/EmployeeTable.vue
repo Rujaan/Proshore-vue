@@ -39,45 +39,48 @@
       <div class="py-2 inline-block min-w-full sm:px-6 lg:px-8">
         <div class="overflow-x-auto">
           <div v-if="searchedEmployee.length > 0">
+            Filter by: {{ filterValue }}
             <table class="min-w-full">
               <thead class="border-b">
                 <tr>
-                  <th
-                    scope="col"
-                    class="text-sm font-medium text-gray-900 px-6 py-4 text-left"
-                  >
-                    Name
-                  </th>
-                  <th
-                    scope="col"
-                    class="text-sm font-medium text-gray-900 px-6 py-4 text-left"
-                  >
-                    Address
-                  </th>
-                  <th
-                    scope="col"
-                    class="text-sm font-medium text-gray-900 px-6 py-4 text-left"
-                  >
-                    Department
-                  </th>
-                  <th
-                    scope="col"
-                    class="text-sm font-medium text-gray-900 px-6 py-4 text-left"
-                  >
-                    Manager
-                  </th>
-                  <th
-                    scope="col"
-                    class="text-sm font-medium text-gray-900 px-6 py-4 text-left"
-                  >
-                    Role
-                  </th>
-                  <th
-                    scope="col"
-                    class="text-sm font-medium text-gray-900 px-6 py-4 text-left"
-                  >
-                    Joining Date
-                  </th>
+                  <TableHeaders
+                    input="Name"
+                    value="name"
+                    :filteredValue="filterValue"
+                    :dir="sortDir"
+                    @filtered="filterTable"
+                  />
+                  <TableHeaders
+                    input="Address"
+                    value="address"
+                    :filteredValue="filterValue"
+                    :dir="sortDir"
+                    @filtered="filterTable"
+                  />
+                  <TableHeaders
+                    input="Department"
+                    value="department.dept"
+                    :filteredValue="filterValue"
+                  />
+                  <TableHeaders
+                    input="Manager"
+                    value="manager.position"
+                    :filteredValue="filterValue"
+                  />
+                  <TableHeaders
+                    input="Role"
+                    value="role"
+                    :filteredValue="filterValue"
+                    :dir="sortDir"
+                    @filtered="filterTable"
+                  />
+                  <TableHeaders
+                    input="Date"
+                    value="joining_date"
+                    :filteredValue="filterValue"
+                    :dir="sortDir"
+                    @filtered="filterTable"
+                  />
                   <th
                     scope="col"
                     class="text-sm font-medium text-gray-900 px-6 py-4 text-left"
@@ -176,40 +179,61 @@
 <script>
 import { defineComponent, ref, watchEffect, computed } from "vue";
 import { getAllEmployees } from "../../services/employee/employeeServices";
+import TableHeaders from "./misc/TableHeaders.vue";
 
 export default defineComponent({
   emits: ["edited", "deleted"],
+  components: { TableHeaders },
 
   setup(props, { emit }) {
     const employees = ref([]);
     const error = ref(null);
     const selectedOption = ref("name");
     const searchedValue = ref("");
+    const filterValue = ref("");
+    const sortDir = ref("asc");
 
     watchEffect((selectedOption) => {
       selectedOption.value = selectedOption;
     });
 
+    const filterTable = (value) => {
+      if (value === filterValue.value) {
+        sortDir.value = sortDir.value === "asc" ? "desc" : "asc";
+      }
+      filterValue.value = value;
+    };
+
     const searchedEmployee = computed(() => {
-      switch (selectedOption.value) {
-        case "name":
-          return employees.value.filter((employee) =>
-            employee.name
-              .toUpperCase()
-              .includes(searchedValue.value.toUpperCase())
-          );
-        case "address":
-          return employees.value.filter((employee) =>
-            employee.address
-              .toUpperCase()
-              .includes(searchedValue.value.toUpperCase())
-          );
-        case "dept":
-          return employees.value.filter((employee) =>
-            employee.department.dept
-              .toUpperCase()
-              .includes(searchedValue.value.toUpperCase())
-          );
+      if (searchedValue.value != "") {
+        switch (selectedOption.value) {
+          case "name":
+            return employees.value.filter((employee) =>
+              employee.name
+                .toUpperCase()
+                .includes(searchedValue.value.toUpperCase())
+            );
+          case "address":
+            return employees.value.filter((employee) =>
+              employee.address
+                .toUpperCase()
+                .includes(searchedValue.value.toUpperCase())
+            );
+          case "dept":
+            return employees.value.filter((employee) =>
+              employee.department.dept
+                .toUpperCase()
+                .includes(searchedValue.value.toUpperCase())
+            );
+        }
+      } else {
+        return employees.value.sort((a, b) => {
+          let modifier = 1;
+          if (sortDir.value === "desc") modifier = -1;
+          if (a[filterValue.value] < b[filterValue.value]) return -1 * modifier;
+          if (a[filterValue.value] > b[filterValue.value]) return 1 * modifier;
+          return 0;
+        });
       }
     });
 
@@ -222,7 +246,6 @@ export default defineComponent({
         employees.value = await res.data;
       } catch (err) {
         error.value = err.message;
-        console.log(error.value);
       }
     };
     fetchEmployee();
@@ -242,6 +265,9 @@ export default defineComponent({
       searchedEmployee,
       edit,
       deleteData,
+      filterValue,
+      filterTable,
+      sortDir,
     };
   },
 });
