@@ -53,15 +53,8 @@ module.exports = () => {
       manager: manager[Math.floor(Math.random() * role.length)],
       joining_date: casual.date((format = "YYYY-MM-DD")),
     });
-    data.manager.push({
-      manager_id: manager[Math.floor(Math.random() * role.length)].id,
-      manager_position:
-        manager[Math.floor(Math.random() * role.length)].position,
-    });
-    data.department.push({
-      department_id: department[Math.floor(Math.random() * role.length)].id,
-      department_dept: department[Math.floor(Math.random() * role.length)].dept,
-    });
   }
+  data.manager = manager;
+  data.department = department;
   return data;
 };

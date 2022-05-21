@@ -98,7 +98,11 @@
                   <td
                     class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
                   >
-                    {{ employee.name }}
+                    <router-link
+                      :to="{ name: 'Details', params: { id: employee.id } }"
+                    >
+                      {{ employee.name }}
+                    </router-link>
                   </td>
 
                   <td

@@ -84,11 +84,12 @@
                         v-model="formData.department"
                         class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                       >
-                        <option value="General" selected>General</option>
-                        <option value="Marketing">Marketing</option>
-                        <option value="Finance">Finance</option>
-                        <option value="Sales">Sales</option>
-                        <option value="HR">HR</option>
+                        <option
+                          v-for="department in allDepartment"
+                          :key="department.id"
+                        >
+                          {{ department.dept }}
+                        </option>
                       </select>
 
                       <label
@@ -103,9 +104,9 @@
                         v-model="formData.manager"
                         class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                       >
-                        <option value="General" selected>General</option>
-                        <option value="Functional">Functional</option>
-                        <option value="Front Line">Front Line</option>
+                        <option v-for="manager in allManager" :key="manager.id">
+                          {{ manager.position }}
+                        </option>
                       </select>
 
                       <label
@@ -178,13 +179,41 @@
 <script>
 import { ref } from "vue";
 import { postEmployee } from "../../services/employee/employeeServices";
+import { getAllDepartments } from "../../services/department/departmentServices";
+import { getAllManager } from "../../services/manager/managerServices.js";
 
 export default {
   setup(props, { emit }) {
     const formData = ref([]);
+    const allDepartment = ref([]);
+    const allManager = ref([]);
     const closeModal = () => {
       emit("close", true);
     };
+
+    const departments = async () => {
+      try {
+        const res = await getAllDepartments();
+        allDepartment.value = res.data;
+        console.log(res.data);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    departments();
+
+    const manager = async () => {
+      try {
+        const res = await getAllManager();
+        allManager.value = res.data;
+        console.log(res.data);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    manager();
 
     const AddEmployee = async () => {
       const min = 0;
@@ -215,7 +244,15 @@ export default {
       }
     };
 
-    return { closeModal, AddEmployee, formData };
+    return {
+      closeModal,
+      AddEmployee,
+      formData,
+      departments,
+      allDepartment,
+      manager,
+      allManager,
+    };
   },
 };
 </script>
