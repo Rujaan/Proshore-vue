@@ -104,7 +104,6 @@ export default {
     const passInput = ref("Password");
 
     const checkData = () => {
-      console.log(store.state);
       if (formData.value.username == "" && formData.value.password == "") {
         error.value = "Blank Fields";
       }
