@@ -39,6 +39,7 @@
       ></span>
       <span class="relative">Login</span>
     </button>
+    <span class="text-red-500 mt-2">{{ error }}</span>
   </form>
 </template>
 
@@ -50,11 +51,15 @@ import { useRouter } from "vue-router";
 export default {
   setup() {
     const store = useStore();
-    const formData = ref([]);
+    const formData = ref({ username: "admin", password: "admin" });
     const router = useRouter();
+    const error = ref();
 
     const checkData = () => {
       console.log(store.state);
+      if (formData.value.username == "" && formData.value.password == "") {
+        error.value = "Blank Fields";
+      }
       if (
         formData.value.username == "admin" &&
         formData.value.password == "admin"
@@ -63,11 +68,14 @@ export default {
         store.commit("setLoggedIn", true);
         store.commit("setUser", formData.value.username);
         router.push("/employee");
+      } else {
+        error.value = "Incorrect Username/ Pass";
       }
     };
     return {
       formData,
       checkData,
+      error,
     };
   },
 };
