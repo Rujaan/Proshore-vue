@@ -31,9 +31,14 @@ Contains the mock data for db, and the server runs through this file
 
 Contains the store for users
 
-## `tailwind.config.js`
+#### `tailwind.config.js`
 
 Contains the config file dor tailwind.
+
+### Other Info
+
+##### The data changes on every json-server reload.
+##### You can click on the name to visit "details" page
 
 
 ## About TS
